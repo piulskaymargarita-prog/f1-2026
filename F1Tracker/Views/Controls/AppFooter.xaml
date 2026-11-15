@@ -5,11 +5,12 @@
 	<Border Background="{StaticResource PanelTranslucentBrush}"
             BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0">
 		<Grid Margin="24,0">
-			<TextBlock Text="© 2026 F1 Tracker · учебный проект · WPF + SQLite" FontSize="12"
+			<TextBlock Text="© 2026 F1 Tracker" FontSize="12"
                        Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-				<TextBlock x:Name="DbText" FontSize="12" Foreground="{StaticResource MutedBrush}" Margin="0,0,20,0"/>
-				<TextBlock x:Name="ClockText" Style="{StaticResource MonoText}" FontSize="12"/>
+                <TextBlock x:Name="AboutText" FontSize="12"
+           Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                <TextBlock x:Name="ClockText" Style="{StaticResource MonoText}" FontSize="12"/>
 			</StackPanel>
 		</Grid>
 	</Border>
