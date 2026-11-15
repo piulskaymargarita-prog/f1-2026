@@ -6,6 +6,13 @@
         Height="720" Width="1200" MinHeight="650" MinWidth="1000"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource AppWindow}">
+
+    <Window.Resources>
+        <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource MutedText}">
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,16 +21,126 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Живой фон: первым, на все строки, чтобы лежал под остальным -->
+        <!-- Живой фон -->
         <c:AnimatedBackground Grid.RowSpan="4"/>
 
         <c:AppHeader ActivePage="Admin"/>
-        <c:BreadcrumbBar Grid.Row="1" Trail="Главная/Администрирование"/>
+        <c:BreadcrumbBar x:Name="Crumbs" Grid.Row="1" Trail="Главная/Администрирование"/>
 
         <Grid Grid.Row="2" Style="{StaticResource PageRoot}">
-            <TextBlock x:Name="StubText" Text="Заглушка — содержимое появится на следующих этапах"
-                       Style="{StaticResource MutedText}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Grid Margin="32,8,32,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel x:Name="TabsPanel" Orientation="Horizontal" Margin="0,0,0,12">
+                    <Button Content="ПОЛЬЗОВАТЕЛИ" CommandParameter="users" Height="40"
+                            Style="{StaticResource NavButton}" Click="Tab_Click"/>
+                    <Button Content="ЖУРНАЛ ДЕЙСТВИЙ" CommandParameter="log" Height="40"
+                            Style="{StaticResource NavButton}" Click="Tab_Click"/>
+                </StackPanel>
+
+                <!-- ===== Пользователи ===== -->
+                <Grid x:Name="UsersPanel" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="360"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource Card}" Padding="0" ClipToBounds="True">
+                        <DataGrid x:Name="UsersGrid" AutoGenerateColumns="True"
+                                  AutoGeneratingColumn="Grid_AutoGeneratingColumn"
+                                  SelectionChanged="UsersGrid_SelectionChanged"/>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource Card}" Margin="16,0,0,0">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+
+                                <!-- Строка состояния -->
+                                <TextBlock x:Name="ErrorText" Foreground="{StaticResource AccentBrush}"
+                                           TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                <TextBlock x:Name="InfoText" Style="{StaticResource MutedText}"
+                                           TextWrapping="Wrap" Margin="0,0,0,4"/>
+
+                                <!-- ===== Блок 1: новый пользователь ===== -->
+                                <TextBlock Text="НОВЫЙ ПОЛЬЗОВАТЕЛЬ" Style="{StaticResource CaptionText}"/>
+
+                                <TextBlock Text="Логин (латиница, цифры, . _ -)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox x:Name="NewLoginBox" MaxLength="32"/>
+
+                                <TextBlock Text="Пароль (минимум 6 символов)" Style="{StaticResource FieldLabel}"/>
+                                <PasswordBox x:Name="NewPassBox" MaxLength="64"/>
+
+                                <TextBlock Text="Роль" Style="{StaticResource FieldLabel}"/>
+                                <ComboBox x:Name="NewRoleCombo" SelectedValuePath="Content" SelectedIndex="0">
+                                    <ComboBoxItem Content="user"/>
+                                    <ComboBoxItem Content="admin"/>
+                                </ComboBox>
+
+                                <Button Content="ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ" Style="{StaticResource PrimaryButton}"
+                                        Margin="0,14,0,0" Click="CreateUser_Click"/>
+
+                                <!-- ===== Блок 2: выбранный пользователь ===== -->
+                                <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,1,0,0"
+                                        Margin="0,22,0,0" Padding="0,16,0,0">
+                                    <StackPanel x:Name="SelectedPanel" IsEnabled="False">
+                                        <TextBlock Text="ВЫБРАННЫЙ ПОЛЬЗОВАТЕЛЬ" Style="{StaticResource CaptionText}"/>
+                                        <TextBlock x:Name="SelectedText" Style="{StaticResource MutedText}"
+                                                   TextWrapping="Wrap" Margin="0,6,0,0"
+                                                   Text="Выберите строку в таблице слева"/>
+
+                                        <TextBlock Text="Новая роль" Style="{StaticResource FieldLabel}"/>
+                                        <ComboBox x:Name="SelRoleCombo" SelectedValuePath="Content">
+                                            <ComboBoxItem Content="user"/>
+                                            <ComboBoxItem Content="admin"/>
+                                        </ComboBox>
+                                        <Button Content="ПРИМЕНИТЬ РОЛЬ" Style="{StaticResource GhostButton}"
+                                                Margin="0,8,0,0" Click="ApplyRole_Click"/>
+
+                                        <TextBlock Text="Новый пароль (минимум 6 символов)"
+                                                   Style="{StaticResource FieldLabel}" Margin="0,16,0,4"/>
+                                        <PasswordBox x:Name="SelPassBox" MaxLength="64"/>
+                                        <Button Content="ЗАДАТЬ НОВЫЙ ПАРОЛЬ" Style="{StaticResource GhostButton}"
+                                                Margin="0,8,0,0" Click="SetPassword_Click"/>
+
+                                        <Button Content="УДАЛИТЬ ПОЛЬЗОВАТЕЛЯ" Style="{StaticResource DangerButton}"
+                                                Margin="0,18,0,0" Click="DeleteUser_Click"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- ===== Журнал ===== -->
+                <Grid x:Name="LogPanel" Grid.Row="1" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="ПОИСК" Style="{StaticResource CaptionText}"
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBox x:Name="LogFilterBox" Width="320" MaxLength="50"
+                                     ToolTip="Пользователь, действие или детали"
+                                     TextChanged="LogFilterBox_TextChanged"/>
+                            <Button Content="ОБНОВИТЬ" Style="{StaticResource GhostButton}"
+                                    Margin="16,0,0,0" Padding="18,8" Click="RefreshLog_Click"/>
+                        </StackPanel>
+                        <TextBlock x:Name="LogCountText" Style="{StaticResource MonoText}"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="12"/>
+                    </Grid>
+
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0" ClipToBounds="True">
+                        <DataGrid x:Name="LogGrid" AutoGenerateColumns="True"
+                                  AutoGeneratingColumn="Grid_AutoGeneratingColumn"/>
+                    </Border>
+                </Grid>
+            </Grid>
         </Grid>
 
         <c:AppFooter Grid.Row="3"/>
