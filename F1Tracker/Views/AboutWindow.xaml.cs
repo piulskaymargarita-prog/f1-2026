@@ -99,4 +99,9 @@ public partial class AboutWindow : Window
                             MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
+
+    private void AppFooter_Loaded(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

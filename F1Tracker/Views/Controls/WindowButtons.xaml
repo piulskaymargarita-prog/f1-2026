@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="F1Tracker.Views.Controls.WindowButtons"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework">
+	<!-- IsHitTestVisibleInChrome: иначе кнопки в «зоне перетаскивания» не нажимались бы -->
+	<StackPanel Orientation="Horizontal" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+		<Button x:Name="MinBtn" Content="&#xE921;" ToolTip="Свернуть"
+                Style="{StaticResource CaptionButton}" Click="Min_Click"/>
+		<Button x:Name="MaxBtn" Content="&#xE922;" ToolTip="Развернуть"
+                Style="{StaticResource CaptionButton}" Click="Max_Click"/>
+		<Button x:Name="CloseBtn" Content="&#xE8BB;" ToolTip="Закрыть"
+                Style="{StaticResource CaptionCloseButton}" Click="Close_Click"/>
+	</StackPanel>
+</UserControl>

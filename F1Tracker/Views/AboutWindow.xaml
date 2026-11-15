@@ -146,6 +146,6 @@
             </Grid>
         </Grid>
 
-        <c:AppFooter Grid.Row="3"/>
+        <c:AppFooter Grid.Row="3" Loaded="AppFooter_Loaded"/>
     </Grid>
 </Window>

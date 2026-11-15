@@ -58,5 +58,6 @@
 				</StackPanel>
 			</Border>
 		</Grid>
+		<c:WindowButtons ShowMaximize="False" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 	</Grid>
 </Window>
